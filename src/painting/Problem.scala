@@ -16,6 +16,7 @@ object Problem {
   val ncol = nextInt()
   nextLine()
   val picture = Array.fill(nrow) { nextLine() }
+  val origpic = picture.clone
 }
 
 trait Command {
@@ -45,7 +46,9 @@ case class Erase(row: Int, col: Int) extends Command {
     picture.updated((row, col), false)
 }
 
-  def output(sol: IndexedSeq[Command]) = {
+object Main extends App {
+
+  def output(sol: List[Command]) = {
     val f = new PrintStream(s"t:/out.${sol.length}.txt")
     f.println(sol.length)
     f.println(sol.mkString("\n"))
@@ -53,8 +56,8 @@ case class Erase(row: Int, col: Int) extends Command {
   }
 
   //println(Problem.picture.mkString("\n"))
-  val sol = Solver.solve
+  val sol = Solver.solve.toList
   output(sol)
   println(s"Score: ${sol.length}")
-  Validator.validate(sol, Problem.picture)
+  Validator.validate(sol, Problem.origpic)
 }
