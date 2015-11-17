@@ -9,7 +9,7 @@ import painting.Problem.{picture, nrow, ncol}
  * Time: 12:36
  */
 object Solver {
-  def solve = { paintArea(51, 8, false) ++ paintArea(5, 0, true) }
+  def solve = { paintArea(51, 6, false) ++ paintArea(5, 0, true) }
 
   def paintArea(areaSize: Int, stop:Int, notFull: Boolean): IndexedSeq[Command] = {
     def shouldPaint(area: Array[String]) = if (notFull)
@@ -29,10 +29,11 @@ object Solver {
           val erases = for {r1 ← area.indices
                             c1 ← area(r1).indices
                             if area(r1)(c1) == '.'
-          } yield Erase(row + r1, row + c1)
-          for {r1 ← row until row + area.length
-               c1 ← col until col + area.head.length}
-            picture(r1) = picture(r1).updated(c1, '.')
+          } yield Erase(row + r1, col + c1)
+          for {r1 ← area.indices
+               c1 ← area(r1).indices
+               if area(r1)(c1) == '#'
+          } picture(row + r1) = picture(row + r1).updated(col + c1, '0')
           Paint(row + area.length/2, col + area.length/2 , area.length/2) +: erases
         } else IndexedSeq.empty[Command]
       }

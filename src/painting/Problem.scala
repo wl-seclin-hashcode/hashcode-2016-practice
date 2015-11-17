@@ -49,7 +49,7 @@ case class Erase(row: Int, col: Int) extends Command {
 object Main extends App {
 
   def output(sol: List[Command]) = {
-    val f = new PrintStream(s"t:/out.${sol.length}.txt")
+    val f = new PrintStream(s"/tmp/out.${sol.length}.txt")
     f.println(sol.length)
     f.println(sol.mkString("\n"))
     f.close
