@@ -1,4 +1,7 @@
 package painting
+
+import painting.Problem.{picture, nrow, ncol}
+
 /**
  * Created with IntelliJ IDEA.
  * User: a203673
@@ -7,11 +10,27 @@ package painting
  */
 object Solver {
   def solve = {
+    val areaSize = 5
     val r = for {
-      row ← 0 until Problem.nrow
-      col ← 0 until Problem.ncol
-      if Problem.picture(row)(col) == '#'
-    } yield Paint(row,col,1)
-    r.toList
+      row ← 0 until nrow by areaSize
+      col ← 0 until ncol by areaSize
+    } yield {
+        val area = picture.slice(row, row + areaSize) map (_.slice(col, col+areaSize))
+
+        if (area.map(_.count('#'.==)).sum > area.map(_.count('.'.==)).sum && area.length == area.head.length) {
+          val erases = for { r1 ← area.indices
+                             c1 ← area(r1).indices
+                             if area(r1)(c1) == '.'
+          } yield Erase(r1, c1)
+          Paint(row,col,area.length - 1) +: erases
+        } else {
+          for {
+            r1 ← area.indices
+            c1 ← area(r1).indices
+            if area(r1)(c1) == '#'
+          } yield Paint(r1,c1,0)
+        }
+      }
+    r.flatten.toList
   }
 }

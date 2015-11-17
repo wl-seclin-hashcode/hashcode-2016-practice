@@ -36,9 +36,12 @@ object Main extends App {
     val f = new PrintStream(s"/tmp/out.${sol.length}.txt")
     f.println(sol.length)
     f.println(sol.mkString("\n"))
+    f.close
   }
+
   //println(Problem.picture.mkString("\n"))
   val sol = Solver.solve
+  output(sol)
   println(s"Score: ${sol.length}")
 }
 
