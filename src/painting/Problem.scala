@@ -32,7 +32,7 @@ object Main extends App {
 
   }
 
-  def output(sol: List[Command]) = {
+  def output(sol: IndexedSeq[Command]) = {
     val f = new PrintStream(s"/tmp/out.${sol.length}.txt")
     f.println(sol.length)
     f.println(sol.mkString("\n"))
