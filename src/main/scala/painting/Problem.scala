@@ -49,10 +49,12 @@ case class Erase(row: Int, col: Int) extends Command {
 object Main extends App {
 
   def output(sol: List[Command]) = {
-    val f = new PrintStream(s"/tmp/out.${sol.length}.txt")
+    val name = s"out.${sol.length}.txt"
+    val f = new PrintStream(name)
     f.println(sol.length)
     f.println(sol.mkString("\n"))
     f.close
+    println(s"wrote to $name")
   }
 
   //println(Problem.picture.mkString("\n"))
@@ -61,3 +63,4 @@ object Main extends App {
   println(s"Score: ${sol.length}")
   Validator.validate(sol, Problem.origpic)
 }
+
