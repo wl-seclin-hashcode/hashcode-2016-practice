@@ -3,12 +3,7 @@ package painting
 import java.io.{ PrintStream, File }
 import java.util.Scanner
 
-/**
- * Created with IntelliJ IDEA.
- * User: a203673
- * Date: 17/11/15
- * Time: 12:23
- */
+
 object Problem {
   val scan = new Scanner(new File("doodle.txt"))
   import scan._
@@ -22,6 +17,7 @@ object Problem {
 trait Command {
   def update(picture: Map[(Int, Int), Boolean]): Map[(Int, Int), Boolean]
 }
+
 case class Paint(row: Int, col: Int, size: Int) extends Command {
   override def toString = s"PAINTSQ $row $col $size"
   def update(picture: Map[(Int, Int), Boolean]): Map[(Int, Int), Boolean] = {
@@ -45,22 +41,3 @@ case class Erase(row: Int, col: Int) extends Command {
   def update(picture: Map[(Int, Int), Boolean]): Map[(Int, Int), Boolean] =
     picture.updated((row, col), false)
 }
-
-object Main extends App {
-
-  def output(sol: List[Command]) = {
-    val name = s"out.${sol.length}.txt"
-    val f = new PrintStream(name)
-    f.println(sol.length)
-    f.println(sol.mkString("\n"))
-    f.close
-    println(s"wrote to $name")
-  }
-
-  //println(Problem.picture.mkString("\n"))
-  val sol = Solver.solve.toList
-  output(sol)
-  println(s"Score: ${sol.length}")
-  Validator.validate(sol, Problem.origpic)
-}
-

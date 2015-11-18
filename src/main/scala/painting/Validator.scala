@@ -14,7 +14,7 @@ object Validator {
       shouldPaint = c == '#'
       isPainted = painted((i, j))
       ok = isPainted == shouldPaint
-//      _ = println(i, j, c, shouldPaint, ok)
+      //      _ = println(i, j, c, shouldPaint, ok)
     } assert(ok, s"($i,$j) should be $shouldPaint but was $isPainted ($c)")
   }
 
