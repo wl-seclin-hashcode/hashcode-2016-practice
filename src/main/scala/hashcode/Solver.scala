@@ -4,13 +4,13 @@ object Solver {
   def solve(problem: Problem): Solution = {
     import problem._
 
-    def paintArea(halfLength: Int, stop: Int, notFull: Boolean): IndexedSeq[Command] = {
+    def paintArea(halfLength: Int, stop: Int, full: Boolean): IndexedSeq[Command] = {
       val length = 2 * halfLength + 1
       def shouldPaint(area: Array[String]) =
-        if (notFull)
-          area.map(_.count('#'.==)).sum > halfLength * area.map(_.count('.'.==)).sum + 1
-        else
+        if (full)
           area.forall(_.forall('#'.==))
+        else
+          area.map(_.count('#'.==)).sum > halfLength * area.map(_.count('.'.==)).sum + 1
 
       if (length <= stop) IndexedSeq.empty[Command]
       else {
@@ -40,12 +40,12 @@ object Solver {
         val (paints, erases) = cmds.partition { case _: Paint => true; case _ => false }
         println(s"${paints.size} paints and ${erases.size} erases for size $halfLength")
         cmds ++ (
-          if (notFull) paintArea(halfLength - 1, stop, false)
-          else paintArea(halfLength, stop, true))
+          if (full) paintArea(halfLength, stop, !full)
+          else paintArea(halfLength - 1, stop, !full))
       }
     }
 
-    Solution(paintArea(25, 0, false))
+    Solution(paintArea(25, 0, true))
   }
 
 }
