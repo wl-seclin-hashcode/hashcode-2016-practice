@@ -1,8 +1,17 @@
-package painting
+package hashcode
 
 import scala.annotation.tailrec
+import scala.util.Success
+import scala.util.Try
 
 object Validator {
+  def score(solution: Solution, problem: Problem): Try[Int] = {
+    Try {
+      validate(solution.commands.toList, problem.picture)
+      solution.commands.size
+    }
+  }
+
   def validate(sol: List[Command], picture: Array[String]) {
     val painted = paintRec(sol, Map.empty.withDefaultValue(false))
 
@@ -23,5 +32,4 @@ object Validator {
     case Nil             => picture
     case command :: tail => paintRec(tail, command.update(picture))
   }
-
 }
