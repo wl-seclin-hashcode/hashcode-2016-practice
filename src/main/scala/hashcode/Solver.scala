@@ -8,13 +8,13 @@ object Solver {
       val length = 2 * halfLength + 1
       def shouldPaint(area: Array[String]) =
         if (notFull)
-          area.map(_.count('#'.==)).sum > area.map(_.count('.'.==)).sum
+          area.map(_.count('#'.==)).sum > halfLength * area.map(_.count('.'.==)).sum + 1
         else
           area.forall(_.forall('#'.==))
 
       if (length <= stop) IndexedSeq.empty[Command]
       else {
-        val r = for {
+        val commands = for {
           row ← 0 until nrow by length
           col ← 0 until ncol by length
         } yield {
@@ -36,11 +36,16 @@ object Solver {
             Paint(row + halfLength, col + halfLength, halfLength) +: erases
           } else IndexedSeq.empty[Command]
         }
-        r.flatten ++ paintArea(halfLength - 1, stop, notFull)
+        val cmds = commands.flatten
+        val (paints, erases) = cmds.partition { case _: Paint => true; case _ => false }
+        println(s"${paints.size} paints and ${erases.size} erases for size $halfLength")
+        cmds ++ (
+          if (notFull) paintArea(halfLength - 1, stop, false)
+          else paintArea(halfLength, stop, true))
       }
     }
 
-    Solution(paintArea(25, 3, false) ++ paintArea(2, 0, true))
+    Solution(paintArea(25, 0, false))
   }
 
 }
