@@ -4,20 +4,21 @@ object Solver {
   def solve(problem: Problem): Solution = {
     import problem._
 
-    def paintArea(areaSize: Int, stop: Int, notFull: Boolean): IndexedSeq[Command] = {
+    def paintArea(halfLength: Int, stop: Int, notFull: Boolean): IndexedSeq[Command] = {
+      val length = 2 * halfLength + 1
       def shouldPaint(area: Array[String]) =
         if (notFull)
           area.map(_.count('#'.==)).sum > area.map(_.count('.'.==)).sum
         else
           area.forall(_.forall('#'.==))
 
-      if (areaSize <= stop) IndexedSeq.empty[Command]
+      if (length <= stop) IndexedSeq.empty[Command]
       else {
         val r = for {
-          row ← 0 until nrow by areaSize
-          col ← 0 until ncol by areaSize
+          row ← 0 until nrow by length
+          col ← 0 until ncol by length
         } yield {
-          val area = picture.slice(row, row + areaSize) map (_.slice(col, col + areaSize))
+          val area = picture.slice(row, row + length).map(_.slice(col, col + length))
 
           if (shouldPaint(area) && area.length == area.head.length) {
             val erases = for {
@@ -32,14 +33,14 @@ object Solver {
               if area(r1)(c1) == '#'
             } picture(row + r1) = picture(row + r1).updated(col + c1, '0')
 
-            Paint(row + area.length / 2, col + area.length / 2, area.length / 2) +: erases
+            Paint(row + halfLength, col + halfLength, halfLength) +: erases
           } else IndexedSeq.empty[Command]
         }
-        r.flatten ++ paintArea(areaSize - 2, stop, notFull)
+        r.flatten ++ paintArea(halfLength - 1, stop, notFull)
       }
     }
 
-    Solution(paintArea(51, 6, false) ++ paintArea(5, 0, true))
+    Solution(paintArea(25, 3, false) ++ paintArea(2, 0, true))
   }
 
 }
