@@ -29,7 +29,7 @@ object Validator {
 
   @tailrec
   def paintRec(sol: List[Command], picture: Map[(Int, Int), Boolean]): Map[(Int, Int), Boolean] = sol match {
-    case Nil             => picture
+    case Nil => picture
     case command :: tail => paintRec(tail, command.update(picture))
   }
 }
