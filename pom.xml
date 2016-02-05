@@ -126,6 +126,9 @@
 						<goals>
 							<goal>format</goal>
 						</goals>
+						<configuration>
+							<alignSingleLineCaseStatements>true</alignSingleLineCaseStatements>
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>
