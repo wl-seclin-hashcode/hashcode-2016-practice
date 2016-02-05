@@ -16,11 +16,15 @@ object Solver {
       else {
         val commands = for {
           row ← 0 until nrow by length
+          if row + length <= nrow
           col ← 0 until ncol by length
+          if col + length <= ncol
         } yield {
-          val area = picture.slice(row, row + length).map(_.slice(col, col + length))
+          val area = picture
+            .slice(row, row + length)
+            .map(_.slice(col, col + length))
 
-          if (shouldPaint(area) && area.length == area.head.length) {
+          if (area.nonEmpty && shouldPaint(area) && area.length == area.head.length) {
             val erases = for {
               r1 ← area.indices
               c1 ← area(r1).indices

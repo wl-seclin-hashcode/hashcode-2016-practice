@@ -5,7 +5,7 @@ import scala.util.Failure
 import scala.util.Success
 
 object Main extends App {
-  val names = Seq("logo.in", "learn_and_teach.in", "right_angle.in")
+  val names = Seq("learn_and_teach.in") //"logo.in",  "right_angle.in"
   names.foreach(solveIt)
 
   def solveIt(n: String) = {

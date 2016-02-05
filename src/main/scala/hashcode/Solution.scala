@@ -19,8 +19,8 @@ case class Paint(row: Int, col: Int, size: Int) extends Command {
     assert(col0 >= 0)
     val rown = row + size
     val coln = col + size
-    assert(rown < problem.nrow, s"row $rown")
-    assert(coln < problem.ncol, s"col $coln")
+    assert(rown < problem.nrow, s"$this row $rown")
+    assert(coln < problem.ncol, s"$this col $coln")
     val area = for (i <- row0 to rown; j <- col0 to coln) yield (i, j)
     area.foldLeft(picture) {
       case (pic, (i, j)) => pic.updated((i, j), true)
