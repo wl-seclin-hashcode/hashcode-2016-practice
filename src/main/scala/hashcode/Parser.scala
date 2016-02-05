@@ -4,8 +4,8 @@ import java.io.File
 import java.util.Scanner
 
 object Parser {
-  def read(): Problem = {
-    val scan = new Scanner(new File("doodle.txt"))
+  def read(f:String): Problem = {
+    val scan = new Scanner(new File(f))
     import scan._
     val nrow = nextInt()
     val ncol = nextInt()

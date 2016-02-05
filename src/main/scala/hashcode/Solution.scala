@@ -9,7 +9,7 @@ trait Command {
 }
 
 case class Paint(row: Int, col: Int, size: Int) extends Command {
-  override def toString = s"PAINTSQ $row $col $size"
+  override def toString = s"PAINT_SQUARE $row $col $size"
   def update(picture: Map[(Int, Int), Boolean]): Map[(Int, Int), Boolean] = {
     val row0 = row - size
     val col0 = col - size
@@ -26,7 +26,7 @@ case class Paint(row: Int, col: Int, size: Int) extends Command {
   }
 }
 case class Erase(row: Int, col: Int) extends Command {
-  override def toString = s"ERASECELL $row $col"
+  override def toString = s"ERASE_CELL $row $col"
 
   def update(picture: Map[(Int, Int), Boolean]): Map[(Int, Int), Boolean] =
     picture.updated((row, col), false)
