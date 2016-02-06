@@ -10,8 +10,8 @@ object Parser {
     val nrow = nextInt()
     val ncol = nextInt()
     nextLine()
-    val picture = Array.fill(nrow) { nextLine() }
+    val picture = Vector.fill(nrow) { nextLine() }
 
-    Problem(picture.toVector, nrow, ncol)
+    Problem(picture, nrow, ncol)
   }
 }

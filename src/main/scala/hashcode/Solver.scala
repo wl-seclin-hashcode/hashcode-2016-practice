@@ -1,9 +1,11 @@
 package hashcode
 
-object Solver {
+import grizzled.slf4j.Logging
+
+object Solver extends Logging {
   def solve(problem: Problem): Solution = {
     import problem._
-    var rest=problem
+    var rest = problem
 
     def paintArea(halfLength: Int, stop: Int, full: Boolean): IndexedSeq[Command] = {
       val length = 2 * halfLength + 1
@@ -36,14 +38,14 @@ object Solver {
               r1 ← area.indices
               c1 ← area(r1).indices
               if area(r1)(c1) == '#'
-            } rest=rest.update(row + r1,col + c1, '0')
+            } rest = rest.update(row + r1, col + c1, '0')
 
             Paint(row + halfLength, col + halfLength, halfLength) +: erases
           } else IndexedSeq.empty[Command]
         }
         val cmds = commands.flatten
         val (paints, erases) = cmds.partition { case _: Paint => true; case _ => false }
-        println(s"${paints.size} paints and ${erases.size} erases for size $halfLength")
+        debug(s"${paints.size} paints and ${erases.size} erases for size $halfLength")
         cmds ++ (
           if (full) paintArea(halfLength, stop, !full)
           else paintArea(halfLength - 1, stop, !full))
