@@ -5,11 +5,9 @@ import scala.util.Success
 import scala.util.Try
 
 object Validator {
-  def score(solution: Solution, problem: Problem): Try[Int] = {
-    Try {
-      validate(solution.commands.toList, problem)
-      solution.commands.size
-    }
+  def score(solution: Solution, problem: Problem): Try[Int] = Try {
+    validate(solution.commands.toList, problem)
+    problem.ncol * problem.nrow - solution.commands.size
   }
 
   def validate(sol: List[Command], problem: Problem) {
