@@ -3,10 +3,11 @@ package hashcode
 object Solver {
   def solve(problem: Problem): Solution = {
     import problem._
+    var rest=problem
 
     def paintArea(halfLength: Int, stop: Int, full: Boolean): IndexedSeq[Command] = {
       val length = 2 * halfLength + 1
-      def shouldPaint(area: Array[String]) =
+      def shouldPaint(area: Vector[String]) =
         if (full)
           area.forall(_.forall('#'.==))
         else
@@ -20,7 +21,7 @@ object Solver {
           col ← 0 until ncol by length
           if col + length <= ncol
         } yield {
-          val area = picture
+          val area = rest.picture
             .slice(row, row + length)
             .map(_.slice(col, col + length))
 
@@ -35,7 +36,7 @@ object Solver {
               r1 ← area.indices
               c1 ← area(r1).indices
               if area(r1)(c1) == '#'
-            } picture(row + r1) = picture(row + r1).updated(col + c1, '0')
+            } rest=rest.update(row + r1,col + c1, '0')
 
             Paint(row + halfLength, col + halfLength, halfLength) +: erases
           } else IndexedSeq.empty[Command]

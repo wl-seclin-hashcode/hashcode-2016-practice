@@ -12,6 +12,6 @@ object Parser {
     nextLine()
     val picture = Array.fill(nrow) { nextLine() }
 
-    Problem(picture, nrow, ncol)
+    Problem(picture.toVector, nrow, ncol)
   }
 }
