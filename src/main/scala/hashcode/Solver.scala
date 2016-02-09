@@ -9,18 +9,23 @@ object Solver extends Logging {
 
     def paintArea(halfLength: Int, stop: Int, full: Boolean): IndexedSeq[Command] = {
       val length = 2 * halfLength + 1
-      def shouldPaint(area: Vector[String]) =
+      def shouldPaint(area: Vector[String]) = {
+        val toPaint = area.map(_.count('#'.==)).sum
+        val toErase = area.map(_.count('#'.!=)).sum
         if (full)
           area.forall(_.forall('#'.==))
         else
-          area.map(_.count('#'.==)).sum > halfLength * area.map(_.count('.'.==)).sum + 1
+          toErase * 8 < toPaint
+        //          toPaint - toErase > 4 * halfLength * halfLength
+        //          area.map(_.count('#'.==)).sum > halfLength * halfLength * area.map(_.count('#'.!=)).sum + 1
+      }
 
       if (length <= stop) IndexedSeq.empty[Command]
       else {
         val commands = for {
-          row ← 0 until nrow by length
+          row ← 0 until nrow
           if row + length <= nrow
-          col ← 0 until ncol by length
+          col ← 0 until ncol
           if col + length <= ncol
         } yield {
           val area = rest.picture
@@ -52,7 +57,7 @@ object Solver extends Logging {
       }
     }
 
-    Solution(paintArea(25, 0, true))
+    Solution(paintArea(8, 0, true))
   }
 
 }

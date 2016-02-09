@@ -9,7 +9,7 @@ object Main extends App with Logging {
     "learn_and_teach.in",
     "logo.in",
     "right_angle.in")
-  info(s"total score for $names : " + names.map(solveIt).sum)
+  info(names.map(solveIt).sum + s" total score for $names ")
 
   def solveIt(n: String) = {
     val problem = Parser.read(n)
