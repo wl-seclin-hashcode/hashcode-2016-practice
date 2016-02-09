@@ -14,12 +14,12 @@ object Solver extends Logging {
         if (full)
           area.forall(_.forall('#'.==))
         else
-          toErase * 8 < toPaint
+          toErase * 10 < toPaint
         //          toPaint - toErase > 4 * halfLength * halfLength
         //          area.map(_.count('#'.==)).sum > halfLength * halfLength * area.map(_.count('#'.!=)).sum + 1
       }
 
-      if (length <= stop) (IndexedSeq.empty[Command], partialSolution)
+      if (halfLength <= stop) (IndexedSeq.empty[Command], partialSolution)
       else {
         var rest = partialSolution
         val commands = for {
@@ -52,13 +52,14 @@ object Solver extends Logging {
         val (paints, erases) = cmds.partition { case _: PaintSquare => true; case _ => false }
         debug(s"${paints.size} paints and ${erases.size} erases for size $halfLength")
         val (nextCmds, notPainted) =
-          if (full) paintArea(halfLength, stop, !full, rest)
-          else paintArea(halfLength - 1, stop, !full, rest)
+//          if (full) paintArea(halfLength, stop, !full, rest)
+//          else 
+            paintArea(halfLength - 1, stop, full, rest)
         (cmds ++ nextCmds, notPainted)
       }
     }
 
-    val (squareCommands, notPainted) = paintArea(8, 1, true, problem)
+    val (squareCommands, notPainted) = paintArea(8, 6, true, problem)
     val lineCmds = lineCommands(notPainted, squareCommands)
     Solution(lineCmds)
   }
@@ -71,8 +72,8 @@ object Solver extends Logging {
       if picture(row)(col) == '#'
     } yield (row, col)).headOption match {
       case Some((row, col)) =>
-        val line = picture(row).drop(col).takeWhile(_ == '#')
-        val column = picture.map(_(col)).drop(row).takeWhile(_ == '#')
+        val line = picture(row).drop(col).takeWhile(_ != '.')
+        val column = picture.map(_(col)).drop(row).takeWhile(_ != '.')
         val endOfLine = if (line.size > column.size)
           Point(row, col + line.size - 1)
         else Point(row + column.size - 1, col)
