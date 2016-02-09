@@ -4,12 +4,10 @@ import scala.annotation.tailrec
 import scala.collection.IndexedSeq
 
 case class Problem(picture: Vector[String], nrow: Int, ncol: Int) {
-  def update(row: Int, col: Int, c: Char) =
-    copy(picture = picture.updated(row, picture(row).updated(col, c)))
 
   lazy val points = for {
-    (row, line) <- picture.zipWithIndex
-    (c, col) <- row.zipWithIndex
+    (row, line) ← picture.zipWithIndex
+    (c, col) ← row.zipWithIndex
     if c == '#'
   } yield Point(line, col)
 
@@ -28,8 +26,8 @@ case class Problem(picture: Vector[String], nrow: Int, ncol: Int) {
       else {
         val p = toExplore.head
         val next = for {
-          dx <- -1 to 1
-          dy <- -1 to 1
+          dx ← -1 to 1
+          dy ← -1 to 1
           if dx != 0 || dy != 0
           row = p.row + dx
           col = p.col + dy
@@ -51,27 +49,27 @@ case class Shape(points: Set[Point]) {
   val maxCol = points.maxBy(_.col).col
 
   def lines = for {
-    (_, pts) <- points.groupBy(_.row).toList.sortBy(_._1)
-    line <- groups { p => p.copy(col = p.col + 1) }(pts.toList.sortBy(_.col))
+    (_, pts) ← points.groupBy(_.row).toList.sortBy(_._1)
+    line ← groups { p ⇒ p.copy(col = p.col + 1) }(pts.toList.sortBy(_.col))
   } yield line
 
   def cols = for {
-    (_, pts) <- points.groupBy(_.col).toList.sortBy(_._1)
-    col <- groups { p => p.copy(row = p.row + 1) }(pts.toList.sortBy(_.row))
+    (_, pts) ← points.groupBy(_.col).toList.sortBy(_._1)
+    col ← groups { p ⇒ p.copy(row = p.row + 1) }(pts.toList.sortBy(_.row))
   } yield col
 
-  def groups(next: Point => Point)(pts: List[Point], group: List[Point] = Nil, acc: List[List[Point]] = Nil): List[List[Point]] = pts match {
-    case Nil => if (group.isEmpty) acc else group :: acc
-    case h :: t =>
+  def groups(next: Point ⇒ Point)(pts: List[Point], group: List[Point] = Nil, acc: List[List[Point]] = Nil): List[List[Point]] = pts match {
+    case Nil ⇒ if (group.isEmpty) acc else group :: acc
+    case h :: t ⇒
       if (group.isEmpty || h == next(group.head)) groups(next)(t, h :: group, acc)
       else groups(next)(t, List(h), group :: acc)
   }
 
   def image: IndexedSeq[IndexedSeq[Boolean]] = {
     for {
-      row <- minRow to maxRow
+      row ← minRow to maxRow
     } yield for {
-      col <- minCol to maxCol
+      col ← minCol to maxCol
       point = Point(row, col)
     } yield points.contains(point)
   }

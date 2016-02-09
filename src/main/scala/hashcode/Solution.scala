@@ -23,9 +23,9 @@ case class PaintSquare(p: Point, size: Int) extends Command {
     val coln = p.col + size
     assert(rown < problem.nrow, s"$this row $rown")
     assert(coln < problem.ncol, s"$this col $coln")
-    val area = for (i <- row0 to rown; j <- col0 to coln) yield (i, j)
+    val area = for (i ← row0 to rown; j ← col0 to coln) yield (i, j)
     area.foldLeft(picture) {
-      case (pic, (i, j)) => pic.updated(Point(i, j), true)
+      case (pic, (i, j)) ⇒ pic.updated(Point(i, j), true)
     }
   }
 }

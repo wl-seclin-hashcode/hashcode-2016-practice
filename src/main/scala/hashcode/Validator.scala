@@ -13,9 +13,9 @@ object Validator {
     val painted = paintRec(sol, Map.empty.withDefaultValue(false), problem)
 
     for {
-      i <- 0 until problem.nrow
+      i ← 0 until problem.nrow
       line = problem.picture(i)
-      j <- 0 until problem.ncol
+      j ← 0 until problem.ncol
       c = line(j)
       shouldPaint = c == '#'
       isPainted = painted(Point(i, j))
@@ -28,7 +28,7 @@ object Validator {
     sol: List[Command],
     picture: Map[Point, Boolean],
     problem: Problem): Map[Point, Boolean] = sol match {
-    case Nil             => picture
-    case command :: tail => paintRec(tail, command.update(picture, problem), problem)
+    case Nil             ⇒ picture
+    case command :: tail ⇒ paintRec(tail, command.update(picture, problem), problem)
   }
 }

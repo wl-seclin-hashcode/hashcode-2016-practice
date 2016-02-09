@@ -18,8 +18,8 @@ object Main extends App with Logging {
     showSolution(solution, problem, n)
 
     Validator.score(solution, problem)
-      .recover { case e => error(s"validation error for $n", e); 0 }
-      .map { score =>
+      .recover { case e ⇒ error(s"validation error for $n", e); 0 }
+      .map { score ⇒
         info(s"score for $n : $score")
         Formatter.write(solution, score, n)
         score
@@ -36,7 +36,7 @@ object Main extends App with Logging {
           (y * cellHeight).toInt)
 
       for {
-        cmd <- s.commands.take(step)
+        cmd ← s.commands.take(step)
       } draw(cmd)
 
       def drawCell(r: Int, c: Int, erase: Boolean = false) = {
@@ -47,17 +47,17 @@ object Main extends App with Logging {
       }
 
       def draw(cmd: Command) = cmd match {
-        case PaintSquare(Point(row, col), size) =>
+        case PaintSquare(Point(row, col), size) ⇒
           for {
-            r <- row - size to row + size
-            c <- col - size to col + size
+            r ← row - size to row + size
+            c ← col - size to col + size
           } drawCell(r, c)
-        case PaintLine(Point(row, col), Point(row2, col2)) =>
+        case PaintLine(Point(row, col), Point(row2, col2)) ⇒
           for {
-            r <- row to row2
-            c <- col to col2
+            r ← row to row2
+            c ← col to col2
           } drawCell(r, c)
-        case Erase(row, col) =>
+        case Erase(row, col) ⇒
           drawCell(row, col, true)
       }
 

@@ -12,7 +12,7 @@ import scala.swing.event.Key
 import java.awt.Graphics2D
 
 case class Visualizer[T, P](
-    painter: (Graphics, Dimension, P, T) => Unit,
+    painter: (Graphics, Dimension, P, T) ⇒ Unit,
     steps: Seq[T],
     problem: P,
     name: String) {
@@ -25,7 +25,7 @@ case class Visualizer[T, P](
     contents = new Panel {
       listenTo(keys)
       reactions += {
-        case KeyPressed(_, key, _, _) => handleKey(key)
+        case KeyPressed(_, key, _, _) ⇒ handleKey(key)
       }
       override def paintComponent(g: Graphics2D) {
         painter(g, size, problem, steps(turn))
@@ -42,25 +42,25 @@ case class Visualizer[T, P](
 
   def handleKey(key: Key.Value) = {
     key match {
-      case Key.Up =>
+      case Key.Up ⇒
         updateSpeed(-delayDelta)
-      case Key.Down =>
+      case Key.Down ⇒
         updateSpeed(delayDelta)
-      case Key.Left =>
+      case Key.Left ⇒
         prevTurn()
-      case Key.Right =>
+      case Key.Right ⇒
         nextTurn()
-      case Key.End =>
+      case Key.End ⇒
         turn = steps.size - 1
-      case Key.Home =>
+      case Key.Home ⇒
         turn = 0
-      case Key.PageUp =>
+      case Key.PageUp ⇒
         turn = 0 max turn - 100
-      case Key.PageDown =>
+      case Key.PageDown ⇒
         turn = steps.size - 1 min turn + 100
-      case Key.Space =>
+      case Key.Space ⇒
         pause()
-      case _ =>
+      case _ ⇒
     }
     doPaint()
   }
@@ -69,10 +69,10 @@ case class Visualizer[T, P](
   def prevTurn() = if (turn > 0) turn -= 1
 
   def pause() = paintTask match {
-    case Some(task) =>
+    case Some(task) ⇒
       task.cancel()
       paintTask = None
-    case None =>
+    case None ⇒
       paintTask = Some(newPaintTask)
       timer.scheduleAtFixedRate(paintTask.get, delayMs, delayMs)
   }

@@ -131,6 +131,7 @@
 							<goal>format</goal>
 						</goals>
 						<configuration>
+							<rewriteArrowSymbols>true</rewriteArrowSymbols>
 							<alignSingleLineCaseStatements>true</alignSingleLineCaseStatements>
 						</configuration>
 					</execution>
