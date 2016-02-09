@@ -14,12 +14,14 @@ import java.awt.Graphics2D
 case class Visualizer[T, P](
     painter: (Graphics, Dimension, P, T) => Unit,
     steps: Seq[T],
-    problem: P) {
+    problem: P,
+    name: String) {
 
   val delayDelta = 50
   var delayMs = 1000
   var turn = 0
   val frame = new MainFrame {
+    title = name
     contents = new Panel {
       listenTo(keys)
       reactions += {
@@ -85,7 +87,7 @@ case class Visualizer[T, P](
   def doPaint(): Unit = {
     frame.repaint()
     val maxTurns = steps.size
-    frame.title = s"turn $turn/$maxTurns delay : $delayMs ms"
+    frame.title = s"$name - turn $turn/$maxTurns delay : $delayMs ms"
   }
 
   def newPaintTask = new TimerTask {

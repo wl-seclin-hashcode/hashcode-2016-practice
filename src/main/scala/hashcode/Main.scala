@@ -1,6 +1,6 @@
 package hashcode
 
-import java.awt.{Color, Dimension, Graphics}
+import java.awt.{ Color, Dimension, Graphics }
 
 import grizzled.slf4j.Logging
 
@@ -14,7 +14,7 @@ object Main extends App with Logging {
   def solveIt(n: String) = {
     val problem = Parser.read(n)
     val solution = Solver.solve(problem)
-    showSolution(solution, problem)
+    showSolution(solution, problem, n)
 
     Validator.score(solution, problem)
       .recover { case e => error(s"validation error for $n", e); 0 }
@@ -25,7 +25,7 @@ object Main extends App with Logging {
       }.get
   }
 
-  def showSolution(s: Solution, p: Problem) {
+  def showSolution(s: Solution, p: Problem, name: String) {
 
     def paintSol(g: Graphics, d: Dimension, p: Problem, step: Int): Unit = {
       val cellWidth = (d.getWidth / p.ncol).toInt
@@ -51,13 +51,18 @@ object Main extends App with Logging {
             r <- row - size to row + size
             c <- col - size to col + size
           } drawCell(r, c)
+        case PaintLine(Point(row, col), Point(row2, col2)) =>
+          for {
+            r <- row to row2
+            c <- col to col2
+          } drawCell(r, c)
         case Erase(row, col) =>
           drawCell(row, col, true)
       }
 
     }
 
-    Visualizer(paintSol, (0 to s.commands.size).toSeq, p)
+    Visualizer(paintSol, (0 to s.commands.size).toSeq, p, name)
 
   }
 
