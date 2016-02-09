@@ -40,11 +40,11 @@ object Solver extends Logging {
               if area(r1)(c1) == '#'
             } rest = rest.update(row + r1, col + c1, '0')
 
-            Paint(row + halfLength, col + halfLength, halfLength) +: erases
+            PaintSquare(Point(row + halfLength, col + halfLength), halfLength) +: erases
           } else IndexedSeq.empty[Command]
         }
         val cmds = commands.flatten
-        val (paints, erases) = cmds.partition { case _: Paint => true; case _ => false }
+        val (paints, erases) = cmds.partition { case _: PaintSquare => true; case _ => false }
         debug(s"${paints.size} paints and ${erases.size} erases for size $halfLength")
         cmds ++ (
           if (full) paintArea(halfLength, stop, !full)

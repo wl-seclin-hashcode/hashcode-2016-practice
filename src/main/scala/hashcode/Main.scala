@@ -1,12 +1,8 @@
 package hashcode
 
-import java.io.PrintStream
-import scala.util.Failure
-import scala.util.Success
+import java.awt.{Color, Dimension, Graphics}
+
 import grizzled.slf4j.Logging
-import java.awt.Graphics
-import java.awt.Dimension
-import java.awt.Color
 
 object Main extends App with Logging {
   val names = Seq(
@@ -50,7 +46,7 @@ object Main extends App with Logging {
       }
 
       def draw(cmd: Command) = cmd match {
-        case Paint(row, col, size) =>
+        case PaintSquare(Point(row, col), size) =>
           for {
             r <- row - size to row + size
             c <- col - size to col + size
