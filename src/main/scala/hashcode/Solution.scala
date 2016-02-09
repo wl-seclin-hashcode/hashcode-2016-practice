@@ -45,5 +45,15 @@ class PaintLine(p1: Point, p2: Point) extends Command {
 
   override def toString = s"PAINT_LINE $p1 $p2"
 
-  override def update(picture: Map[Point, Boolean], problem: Problem) = ???
+  override def update(picture: Map[Point, Boolean], problem: Problem) = {
+    assert(p1.row == p2.row || p1.col == p2.col, "Not a line")
+    if (p1.row == p2.row)
+      (p1.col to p2.col by (p2.col - p1.col).signum foldLeft picture) { (picture, c) ⇒
+        picture.updated(Point(p1.row, c), true)
+      }
+    else
+      (p1.row to p2.row by (p2.row - p1.row).signum foldLeft picture) { (picture, r) ⇒
+        picture.updated(Point(r,p1.col), true)
+      }
+  }
 }
