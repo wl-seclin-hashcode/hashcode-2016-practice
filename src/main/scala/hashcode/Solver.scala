@@ -6,6 +6,9 @@ object Solver extends Logging {
   def solve(problem: Problem): Solution = {
     import problem._
 
+    info(s"${shapes.size} shapes")
+    shapes.foreach(debug(_))
+
     def paintArea(halfLength: Int, stop: Int, full: Boolean, partialSolution: Problem): (IndexedSeq[Command], Problem) = {
       val length = 2 * halfLength + 1
       def shouldPaint(area: Vector[String]) = {
@@ -52,9 +55,9 @@ object Solver extends Logging {
         val (paints, erases) = cmds.partition { case _: PaintSquare => true; case _ => false }
         debug(s"${paints.size} paints and ${erases.size} erases for size $halfLength")
         val (nextCmds, notPainted) =
-//          if (full) paintArea(halfLength, stop, !full, rest)
-//          else 
-            paintArea(halfLength - 1, stop, full, rest)
+          //          if (full) paintArea(halfLength, stop, !full, rest)
+          //          else 
+          paintArea(halfLength - 1, stop, full, rest)
         (cmds ++ nextCmds, notPainted)
       }
     }
@@ -87,6 +90,6 @@ object Solver extends Logging {
       case None =>
         acc
     }
-
   }
+
 }
