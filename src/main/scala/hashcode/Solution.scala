@@ -1,8 +1,6 @@
 package hashcode
 
-import scala.collection.IndexedSeq
-
-case class Solution(commands: IndexedSeq[Command])
+case class Solution(commands: Seq[Command])
 
 trait Command {
   def update(picture: Map[Point, Boolean], problem: Problem): Map[Point, Boolean]

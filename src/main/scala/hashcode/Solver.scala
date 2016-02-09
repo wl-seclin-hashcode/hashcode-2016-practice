@@ -59,11 +59,11 @@ object Solver extends Logging {
     }
 
     val (squareCommands, notPainted) = paintArea(8, 1, true, problem)
-    val lineCmds = lineCommands(notPainted)
-    Solution(squareCommands ++ lineCmds)
+    val lineCmds = lineCommands(notPainted, squareCommands)
+    Solution(lineCmds)
   }
 
-  def lineCommands(partialSolution: Problem): Seq[Command] = {
+  def lineCommands(partialSolution: Problem, acc: Seq[Command]): Seq[Command] = {
     import partialSolution._
     (for {
       row ← 0 until nrow
@@ -82,9 +82,9 @@ object Solver extends Logging {
             r.update(row, col, '0')
           }
         }
-        lineCommands(rest) :+ cmd
+        lineCommands(rest, acc :+ cmd)
       case None =>
-        Nil
+        acc
     }
 
   }
