@@ -5,9 +5,8 @@ import grizzled.slf4j.Logging
 object Solver extends Logging {
   def solve(problem: Problem): Solution = {
     import problem._
-    var rest = problem
 
-    def paintArea(halfLength: Int, stop: Int, full: Boolean): IndexedSeq[Command] = {
+    def paintArea(halfLength: Int, stop: Int, full: Boolean, partialSolution: Problem): IndexedSeq[Command] = {
       val length = 2 * halfLength + 1
       def shouldPaint(area: Vector[String]) = {
         val toPaint = area.map(_.count('#'.==)).sum
@@ -22,6 +21,7 @@ object Solver extends Logging {
 
       if (length <= stop) IndexedSeq.empty[Command]
       else {
+        var rest = partialSolution
         val commands = for {
           row ← 0 until nrow
           if row + length <= nrow
@@ -52,12 +52,12 @@ object Solver extends Logging {
         val (paints, erases) = cmds.partition { case _: PaintSquare => true; case _ => false }
         debug(s"${paints.size} paints and ${erases.size} erases for size $halfLength")
         cmds ++ (
-          if (full) paintArea(halfLength, stop, !full)
-          else paintArea(halfLength - 1, stop, !full))
+          if (full) paintArea(halfLength, stop, !full, rest)
+          else paintArea(halfLength - 1, stop, !full, rest))
       }
     }
 
-    Solution(paintArea(8, 0, true))
+    Solution(paintArea(8, 0, true, problem))
   }
 
 }
