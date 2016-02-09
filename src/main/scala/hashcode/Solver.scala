@@ -59,7 +59,7 @@ object Solver extends Logging {
       }
     }
 
-    val (squareCommands, notPainted) = paintArea(8, 6, true, problem)
+    val (squareCommands, notPainted) = paintArea(8, 3, true, problem)
     val lineCmds = lineCommands(notPainted, squareCommands)
     Solution(lineCmds)
   }

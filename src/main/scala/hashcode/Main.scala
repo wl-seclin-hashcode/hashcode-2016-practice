@@ -12,6 +12,7 @@ object Main extends App with Logging {
   info(names.map(solveIt).sum + s" total score for $names ")
 
   def solveIt(n: String) = {
+    info(s"starting problem $n")
     val problem = Parser.read(n)
     val solution = Solver.solve(problem)
     showSolution(solution, problem, n)
