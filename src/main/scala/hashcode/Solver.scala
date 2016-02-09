@@ -6,7 +6,7 @@ object Solver extends Logging {
   def solve(problem: Problem): Solution = {
     import problem._
 
-    def paintArea(halfLength: Int, stop: Int, full: Boolean, partialSolution: Problem): IndexedSeq[Command] = {
+    def paintArea(halfLength: Int, stop: Int, full: Boolean, partialSolution: Problem): (IndexedSeq[Command], Problem) = {
       val length = 2 * halfLength + 1
       def shouldPaint(area: Vector[String]) = {
         val toPaint = area.map(_.count('#'.==)).sum
@@ -19,7 +19,7 @@ object Solver extends Logging {
         //          area.map(_.count('#'.==)).sum > halfLength * halfLength * area.map(_.count('#'.!=)).sum + 1
       }
 
-      if (length <= stop) IndexedSeq.empty[Command]
+      if (length <= stop) (IndexedSeq.empty[Command], partialSolution)
       else {
         var rest = partialSolution
         val commands = for {
@@ -51,13 +51,41 @@ object Solver extends Logging {
         val cmds = commands.flatten
         val (paints, erases) = cmds.partition { case _: PaintSquare => true; case _ => false }
         debug(s"${paints.size} paints and ${erases.size} erases for size $halfLength")
-        cmds ++ (
+        val (nextCmds, notPainted) =
           if (full) paintArea(halfLength, stop, !full, rest)
-          else paintArea(halfLength - 1, stop, !full, rest))
+          else paintArea(halfLength - 1, stop, !full, rest)
+        (cmds ++ nextCmds, notPainted)
       }
     }
 
-    Solution(paintArea(8, 0, true, problem))
+    val (squareCommands, notPainted) = paintArea(8, 1, true, problem)
+    val lineCmds = lineCommands(notPainted)
+    Solution(squareCommands ++ lineCmds)
   }
 
+  def lineCommands(partialSolution: Problem): Seq[Command] = {
+    import partialSolution._
+    (for {
+      row ← 0 until nrow
+      col ← 0 until ncol
+      if picture(row)(col) == '#'
+    } yield (row, col)).headOption match {
+      case Some((row, col)) =>
+        val line = picture(row).drop(col).takeWhile(_ == '#')
+        val column = picture.map(_(col)).drop(row).takeWhile(_ == '#')
+        val endOfLine = if (line.size > column.size)
+          Point(row, col + line.size - 1)
+        else Point(row + column.size - 1, col)
+        val cmd = PaintLine(Point(row, col), endOfLine)
+        val rest = (row to endOfLine.row).foldLeft(partialSolution) { (r, row) =>
+          (col to endOfLine.col).foldLeft(r) { (r, col) =>
+            r.update(row, col, '0')
+          }
+        }
+        lineCommands(rest) :+ cmd
+      case None =>
+        Nil
+    }
+
+  }
 }
