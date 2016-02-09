@@ -7,7 +7,6 @@ object Solver extends Logging {
     import problem._
 
     info(s"${shapes.size} shapes")
-    shapes.foreach(debug(_))
 
     def paintArea(halfLength: Int, stop: Int, full: Boolean, partialSolution: Problem): (IndexedSeq[Command], Problem) = {
       val length = 2 * halfLength + 1
@@ -62,9 +61,17 @@ object Solver extends Logging {
       }
     }
 
-    val (squareCommands, notPainted) = paintArea(8, 3, true, problem)
-    val lineCmds = lineCommands(notPainted, squareCommands)
-    Solution(lineCmds)
+    //    val (squareCommands, notPainted) = paintArea(8, 3, true, problem)
+    //    val lineCmds = lineCommands(notPainted, squareCommands)
+    val shapeCmds = for {
+      shape <- shapes.toList
+      horiz = paintShapeHoriz(shape)
+      vert = paintShapeVert(shape)
+      lines = Seq(horiz, vert).minBy(_.size)
+      _ = debug(s"${lines.size} moves to paint $shape")
+      cmd <- lines
+    } yield cmd
+    Solution(shapeCmds.toVector)
   }
 
   def lineCommands(partialSolution: Problem, acc: Seq[Command]): Seq[Command] = {
@@ -91,5 +98,13 @@ object Solver extends Logging {
         acc
     }
   }
+
+  def paintShapeHoriz(shape: Shape): List[Command] = for {
+    line <- shape.lines.toList
+  } yield PaintLine(line.minBy(_.col), line.maxBy(_.col))
+
+  def paintShapeVert(shape: Shape): List[Command] = for {
+    col <- shape.cols.toList
+  } yield PaintLine(col.minBy(_.row), col.maxBy(_.row))
 
 }
