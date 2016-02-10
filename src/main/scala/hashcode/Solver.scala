@@ -2,6 +2,7 @@ package hashcode
 
 import grizzled.slf4j.Logging
 import scala.annotation.tailrec
+import scala.math._
 
 object Solver extends Logging {
   def solve(problem: Problem): Solution = {
@@ -12,9 +13,6 @@ object Solver extends Logging {
 
     val shapeCmds = for {
       shape ← shapes.toList
-      //      horiz = paintShapeHoriz(shape)
-      //      vert = paintShapeVert(shape)
-      //      lines = Seq(horiz, vert).minBy(_.size)
       lines = paintShape(shape)
       _ = debug(s"${lines.size} moves to paint $shape")
       cmd ← lines
@@ -22,7 +20,45 @@ object Solver extends Logging {
     Solution(shapeCmds.toVector)
   }
 
-  def paintShape(shape: Shape, acc: List[Command] = Nil): List[Command] =
+  def squaresInShape(shape: Shape) = {
+    import shape._
+    val maxSize = ((maxRow - minRow) min (maxCol - minCol))
+    for {
+      halfSize <- 1 to maxSize / 2
+      size = 2 * halfSize + 1
+      maxCells = size * size
+      r <- minRow + halfSize to maxRow - halfSize
+      c <- minCol + halfSize to maxCol - halfSize
+      count = shape.points.count(p => p.col >= c - halfSize && p.col <= c + halfSize && p.row >= r - halfSize && p.row <= r + halfSize)
+      if count == maxCells
+    } yield PaintSquare(Point(r, c), halfSize)
+  }.toList
+
+  val shapeCache = collection.mutable.Map.empty[Shape, List[Command]]
+
+  def paintShape(shape: Shape): List[Command] =
+    shapeCache.getOrElseUpdate(shape, {
+      val largeSquares = {
+        val squares = squaresInShape(shape).groupBy(_.size)
+        if (squares.isEmpty) Nil else squares.maxBy(_._1)._2
+      }
+      debug(s"${largeSquares.size} largest squares in shape ${shape.hashCode}")
+      val lineCommands = paintShapeWithLines(shape)
+      debug(s"${lineCommands.size} lines to paint shape ${shape.hashCode}")
+
+      val candidates = largeSquares.headOption.toList ++ largeSquares.lastOption.toList
+      val paintWithSquares = if (shape.points.size < 400) candidates.map {
+        case cmd @ PaintSquare(Point(r, c), halfSize) =>
+          val rest = shape.points.filterNot(p => abs(p.col - c) <= halfSize && abs(p.row - r) <= halfSize)
+          val cmds = findShapes(rest).toList.flatMap(paintShape)
+          cmd :: cmds
+      }
+      else Nil
+      val options = lineCommands :: paintWithSquares
+      options.sortBy(_.size).head
+    })
+
+  def paintShapeWithLines(shape: Shape, acc: List[Command] = Nil): List[Command] =
     if (shape.points.isEmpty) acc
     else {
       def countMandatorySections(part: List[Point], orth: List[List[Point]]) = {
@@ -42,7 +78,7 @@ object Solver extends Logging {
         val cmds = mandatory.map(_._2)
         debug(s"mandatory : $cmds")
         val rest = shape.points -- mandatory.map(_._1).flatten
-        cmds ++ acc ++ findShapes(rest).flatMap(sh ⇒ paintShape(sh, Nil))
+        cmds ++ acc ++ findShapes(rest).flatMap(sh ⇒ paintShapeWithLines(sh, Nil))
       } else {
         debug(s"only ${acc.size} mandatory commands, fallback to vert/horiz mode")
         val horiz = paintShapeHoriz(shape)

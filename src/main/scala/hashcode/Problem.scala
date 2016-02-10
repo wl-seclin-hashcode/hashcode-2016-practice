@@ -16,6 +16,15 @@ case class Shape(points: Set[Point]) {
   lazy val maxRow = points.maxBy(_.row).row
   lazy val maxCol = points.maxBy(_.col).col
 
+  def split = {
+    val (a, b) =
+      if (maxCol - minCol < maxRow - minRow)
+        points.partition(_.row <= (minRow + maxRow) / 2)
+      else
+        points.partition(_.col <= (minCol + maxCol) / 2)
+    List(Shape(a), Shape(b))
+  }
+
   lazy val lines = for {
     (_, pts) ← points.groupBy(_.row).toList.sortBy(_._1)
     line ← groups { p ⇒ p.copy(col = p.col + 1) }(pts.toList.sortBy(_.col))
